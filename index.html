@@ -9,7 +9,15 @@
 <meta property="og:description" content="Um de vocês não sabe a palavra. Descubram quem! Jogue com os amigos em um celular só.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#17305C">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕵️</text></svg>">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Impostor">
+<meta name="format-detection" content="telephone=no">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="/icon-192.png">
+<link rel="manifest" href="/manifest.webmanifest">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
@@ -30,23 +38,47 @@ body{
   font-family:"Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   font-size:17px;line-height:1.45;
 }
-main{max-width:520px;margin:0 auto;padding:28px 20px 40px}
+main{max-width:520px;margin:0 auto;padding:18px 20px 40px}
+body{overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent}
+button{touch-action:manipulation}
 h1{font-size:clamp(2.4rem,11vw,3.6rem);line-height:.95;font-weight:800;margin:8px 0 6px;letter-spacing:-.02em}
-.brand{display:flex;align-items:center;gap:14px;margin:6px 0 8px}
-.brand svg{width:64px;height:64px;flex:none;animation:wobble 3.5s ease-in-out infinite}
+.brand{display:flex;align-items:center;gap:12px;margin:4px 0 6px}
+.brand h1{font-size:2.4rem}
+.brand .mascot{width:56px;height:56px;border-radius:50%;object-fit:cover;border:3px solid var(--mint);box-shadow:0 6px 16px rgba(0,0,0,.3);flex:none;animation:wobble 3.5s ease-in-out infinite}
 @keyframes wobble{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg) translateY(-3px)}}
-.kicker{display:block;font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mint);font-weight:800;margin-bottom:2px}
+.kicker{display:block;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mint);font-weight:800;margin-bottom:2px}
 .theme-current{width:100%;display:flex;align-items:center;gap:12px;text-align:left;background:rgba(255,255,255,.08);color:#fff;border:2px solid var(--line);padding:14px 16px}
 .theme-current .emo{font-size:1.8rem;line-height:1;width:48px;height:48px;border-radius:12px;display:grid;place-items:center;flex:none}
 .theme-current .nm{flex:1;font-size:1.1rem;font-weight:800}
 .theme-current .nm small{display:block;font-weight:400;color:var(--muted);font-size:.85rem}
 .theme-current .chg{color:var(--mint);font-weight:600;font-size:.95rem}
-#themeSeg{margin-top:8px;animation:drop .25s ease-out}
-@keyframes drop{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.sheet-back{position:fixed;inset:0;z-index:30;background:rgba(5,10,25,.6);animation:fade .25s ease-out}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:31;max-width:560px;margin:0 auto;background:#1C3764;border-radius:26px 26px 0 0;
+  padding:10px 16px calc(18px + env(safe-area-inset-bottom,0px));max-height:80vh;display:flex;flex-direction:column;
+  box-shadow:0 -10px 40px rgba(0,0,0,.4);animation:sheetUp .32s cubic-bezier(.2,1,.3,1);transition:transform .2s}
+@keyframes sheetUp{from{transform:translateY(100%)}to{transform:none}}
+.sheet .handle{width:44px;height:5px;border-radius:3px;background:rgba(255,255,255,.3);margin:4px auto 10px;flex:none}
+.sheet-head{display:flex;justify-content:space-between;align-items:center;padding:0 4px 10px;touch-action:none}
+.sheet-head h2{margin:0}
+.sheet-head button{background:rgba(255,255,255,.1);color:#fff;padding:8px 14px;font-size:.95rem}
+.sheet .seg{overflow-y:auto;-webkit-overflow-scrolling:touch;grid-template-columns:1fr 1fr;background:none;padding:0 0 4px;gap:8px}
+.sheet .seg button{background:rgba(255,255,255,.07);color:#fff;padding:14px 12px;min-height:56px}
+.sheet .seg button[aria-pressed=true]{background:#fff;color:var(--ink)}
 .seg button{display:flex;align-items:center;gap:8px;text-align:left}
 .seg button .dot{width:10px;height:10px;border-radius:50%;flex:none}
-.sub{color:var(--muted);margin:0 0 28px}
-h2{font-size:1.15rem;font-weight:600;margin:28px 0 10px}
+.sub{color:var(--muted);margin:4px 0 8px}
+h2{font-size:1.15rem;font-weight:600;margin:24px 0 10px}
+h2 .n{color:var(--muted);font-weight:400}
+.line{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:24px}
+.line h2{margin:0}
+#setup{padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))}
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:5;padding:28px 20px calc(14px + env(safe-area-inset-bottom,0px));
+  background:linear-gradient(to bottom, rgba(15,35,70,0), var(--bg2) 38%)}
+.dock-inner{max-width:480px;margin:0 auto}
+.dock .btn-main{margin-top:0;box-shadow:0 8px 24px rgba(214,36,90,.35)}
+.dock .hint{text-align:center;margin:6px 0 0;min-height:0}
+.dock .hint:empty{display:none}
+.btn-add{width:56px;flex:none;padding:0;font-size:1.8rem;line-height:1;font-weight:800}
 [tabindex="-1"]:focus{outline:none}
 .row{display:flex;gap:8px}
 input[type=text]{
@@ -58,6 +90,7 @@ input[type=text]:focus{border-color:var(--mint)}
 button{font:inherit;cursor:pointer;border:0;border-radius:14px;padding:14px 18px;font-weight:600}
 button:focus-visible,input:focus-visible{outline:3px solid var(--mint);outline-offset:2px}
 .btn-add{background:var(--mint);color:var(--ink)}
+.btn-add:disabled{opacity:.45}
 .btn-main{width:100%;background:var(--pink);color:#fff;font-size:1.15rem;padding:18px;font-weight:800;margin-top:26px}
 .btn-main:disabled{opacity:.4;cursor:not-allowed}
 .btn-ghost{background:transparent;color:var(--muted);border:2px solid var(--line);width:100%;margin-top:10px}
@@ -71,9 +104,10 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--mint);outline-o
 .custom{display:grid;gap:8px;margin-top:10px}
 .hidden{display:none!important}
 .stepper{display:flex;align-items:center;gap:14px}
-.stepper button{width:48px;height:48px;padding:0;border-radius:50%;background:rgba(255,255,255,.1);color:#fff;font-size:1.5rem;line-height:1}
+.stepper{gap:6px;background:rgba(255,255,255,.06);border-radius:999px;padding:4px}
+.stepper button{width:40px;height:40px;padding:0;border-radius:50%;background:rgba(255,255,255,.1);color:#fff;font-size:1.5rem;line-height:1}
 .stepper button:disabled{opacity:.3;cursor:not-allowed}
-.stepper output{font-size:2rem;font-weight:800;min-width:2ch;text-align:center}
+.stepper output{font-size:1.4rem;font-weight:800;min-width:2ch;text-align:center}
 .linkbtn{background:none;color:var(--muted);text-decoration:underline;padding:6px 0;font-weight:400;font-size:.95rem}
 
 /* ---- telas ---- */
@@ -147,7 +181,7 @@ canvas#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:non
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
 @media (prefers-reduced-motion:reduce){
-  .brand svg,#themeSeg{animation:none}
+  .brand .mascot,.sheet,.sheet-back{animation:none}
   .screen-in,.count,.reveal-names,.overlay,.board .delta{animation:none}
   .flip-inner{transition:none}
   .hold.holding .ring{transition:none;stroke-dashoffset:0}
@@ -159,29 +193,30 @@ canvas#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:non
 <main>
 
 <section id="setup">
-  <div class="brand"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M6 20c8-6 18-8 26-8s18 2 26 8c0 16-8 28-18 30-4 1-6-4-8-4s-4 5-8 4C14 48 6 36 6 20z" fill="#FFF8E7"/><path d="M15 26c3-3 9-3 12 1-3 4-9 4-12-1zM37 27c3-4 9-4 12-1-3 5-9 5-12 1z" fill="#17305C"/><path d="M22 40c6 3 14 3 20 0" stroke="#D6245A" stroke-width="3" fill="none" stroke-linecap="round"/></svg><h1 tabindex="-1" style="margin:0"><span class="kicker">o jogo de festa</span>Impostor</h1></div>
-  <p class="sub">Um de vocês não sabe a palavra. Descubram quem.</p>
+  <div class="brand"><img class="mascot" alt="" src="data:image/jpeg;base64,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"><h1 tabindex="-1" style="margin:0"><span class="kicker">o jogo de festa</span>Impostor</h1></div>
+  <p class="sub hidden" id="tagline">Um de vocês não sabe a palavra. Descubram quem.</p>
 
-  <h2>Jogadores</h2>
+  <h2>Jogadores <span class="n" id="pCount"></span></h2>
   <form class="row" id="addForm">
     <label for="nameInput" class="sr">Nome do jogador</label>
-    <input type="text" id="nameInput" placeholder="Nome do jogador" autocomplete="off" maxlength="24">
-    <button type="submit" class="btn-add">Adicionar</button>
+    <input type="text" id="nameInput" placeholder="Nome do jogador" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="done" maxlength="24">
+    <button type="submit" class="btn-add" id="addBtn" aria-label="Adicionar jogador">+</button>
   </form>
   <ul class="chips" id="chips"></ul>
   <p class="hint" id="countHint"></p>
 
-  <h2 id="impLabel">Impostores</h2>
-  <div class="stepper" role="group" aria-labelledby="impLabel">
-    <button type="button" id="impMinus" aria-label="Menos impostores">−</button>
-    <output id="impCount" aria-live="polite">1</output>
-    <button type="button" id="impPlus" aria-label="Mais impostores">+</button>
+  <div class="line">
+    <h2 id="impLabel">Impostores</h2>
+    <div class="stepper" role="group" aria-labelledby="impLabel">
+      <button type="button" id="impMinus" aria-label="Menos impostores">−</button>
+      <output id="impCount" aria-live="polite">1</output>
+      <button type="button" id="impPlus" aria-label="Mais impostores">+</button>
+    </div>
   </div>
-  <p class="hint" id="impHint"></p>
+  <p class="hint hidden" id="impHint"></p>
 
   <h2>Tema</h2>
   <button type="button" class="theme-current" id="themeCurrent" aria-expanded="false" aria-controls="themeSeg"></button>
-  <div class="seg hidden" role="group" aria-label="Escolha o tema" id="themeSeg"></div>
   <div class="custom hidden" id="customBox">
     <label for="customWord" class="sr">Palavra</label>
     <input type="text" id="customWord" placeholder="Palavra (ex.: Leão)" maxlength="30">
@@ -190,8 +225,10 @@ canvas#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:non
     <p class="hint" style="margin:0">Quem escolhe a palavra vai saber tudo, então é melhor não jogar essa rodada.</p>
   </div>
 
-  <button class="btn-main" id="startBtn" disabled>Começar rodada</button>
-  <p class="hint" id="scoreHint" style="text-align:center"></p>
+  <div class="dock"><div class="dock-inner">
+    <button class="btn-main" id="startBtn" disabled>Começar rodada</button>
+    <p class="hint" id="scoreHint"></p>
+  </div></div>
 </section>
 
 <section id="pass" class="stage hidden">
@@ -230,6 +267,12 @@ canvas#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:non
 
 </main>
 
+<div class="sheet-back hidden" id="sheetBack"></div>
+<div class="sheet hidden" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+  <div class="handle" aria-hidden="true"></div>
+  <div class="sheet-head" id="sheetHead"><h2 id="sheetTitle">Escolha o tema</h2><button type="button" id="sheetClose">Fechar</button></div>
+  <div class="seg" role="group" aria-labelledby="sheetTitle" id="themeSeg"></div>
+</div>
 <div class="overlay hidden" id="overlay" role="dialog" aria-modal="true" aria-labelledby="ovText"></div>
 <canvas id="confetti" class="hidden" aria-hidden="true"></canvas>
 
@@ -284,7 +327,9 @@ function renderChips(){
     li.append(span,b); ul.append(li);
   });
   const n=players.length;
-  $("countHint").textContent = n<3 ? `Adicione pelo menos 3 jogadores (${n} agora).` : `${n} jogadores.`;
+  $("pCount").textContent = n ? `(${n})` : "";
+  $("countHint").textContent = n<3 ? `Mínimo de 3 jogadores.` : "";
+  $("countHint").classList.toggle("hidden", n>=3);
   renderImps(); validate(); renderScoreHint();
 }
 function renderImps(){
@@ -292,9 +337,8 @@ function renderImps(){
   $("impCount").textContent = impCount;
   $("impMinus").disabled = impCount<=1;
   $("impPlus").disabled = impCount>=maxImps();
-  $("impHint").textContent = players.length<5
-    ? "Com 5 ou mais jogadores dá para ter mais de um impostor."
-    : impCount>1 ? "Os impostores não sabem quem é o outro." : `Até ${maxImps()} impostores com ${players.length} jogadores.`;
+  $("impHint").textContent = impCount>1 ? "Os impostores não sabem quem é o outro." : "";
+  $("impHint").classList.toggle("hidden", impCount<2);
   store.set("impostor-count",impCount);
 }
 function renderScoreHint(){
@@ -317,7 +361,7 @@ $("addForm").onsubmit=e=>{
   e.preventDefault();
   const v=$("nameInput").value.trim();
   if(v && !players.some(p=>p.toLowerCase()===v.toLowerCase())){ players.push(v); store.set("impostor-players",players); renderChips(); announce(v+" adicionado"); }
-  $("nameInput").value=""; $("nameInput").focus();
+  $("nameInput").value=""; $("addBtn").disabled=true; $("nameInput").focus();
 };
 function renderCurrent(){
   const [e,c]=META[mode]; const n = mode==="tudo" ? Object.values(THEMES).flat().length : mode==="custom" ? null : THEMES[mode].length;
@@ -325,14 +369,29 @@ function renderCurrent(){
   const em=document.createElement("span"); em.className="emo"; em.style.background=c; em.textContent=e;
   const nm=document.createElement("span"); nm.className="nm"; nm.textContent=nameOf(mode);
   const sm=document.createElement("small"); sm.textContent = n ? `${n} palavras` : "Você escreve a palavra"; nm.append(sm);
-  const ch=document.createElement("span"); ch.className="chg"; ch.textContent = $("themeSeg").classList.contains("hidden") ? "Trocar" : "Fechar";
+  const ch=document.createElement("span"); ch.className="chg"; ch.textContent = "Trocar";
   $("themeCurrent").append(em,nm,ch);
 }
 function toggleThemes(open){
-  const seg=$("themeSeg"); const o = open ?? seg.classList.contains("hidden");
-  seg.classList.toggle("hidden",!o); $("themeCurrent").setAttribute("aria-expanded",o); renderCurrent();
-  if(o){ const b=seg.querySelector('[aria-pressed="true"]'); if(b) b.focus(); }
+  const sh=$("sheet"); const o = open ?? sh.classList.contains("hidden");
+  sh.style.transform="";
+  sh.classList.toggle("hidden",!o); $("sheetBack").classList.toggle("hidden",!o);
+  document.body.style.overflow = o ? "hidden" : "";
+  $("themeCurrent").setAttribute("aria-expanded",o); renderCurrent();
+  if(o){ const b=$("themeSeg").querySelector('[aria-pressed="true"]'); if(b){ b.scrollIntoView?.({block:"nearest"}); b.focus({preventScroll:true}); } haptic(10); }
 }
+$("sheetBack").onclick=()=>{ toggleThemes(false); $("themeCurrent").focus(); };
+$("sheetClose").onclick=()=>{ toggleThemes(false); $("themeCurrent").focus(); };
+document.addEventListener("keydown",e=>{ if(e.key==="Escape" && !$("sheet").classList.contains("hidden")){ toggleThemes(false); $("themeCurrent").focus(); } });
+(function(){ // arrastar para baixo fecha o painel
+  let y0=null; const sh=$("sheet");
+  [$("sheetHead"), sh.querySelector(".handle")].forEach(h=>{
+    h.addEventListener("touchstart",e=>{ y0=e.touches[0].clientY; sh.style.transition="none"; },{passive:true});
+    h.addEventListener("touchmove",e=>{ if(y0===null) return; const dy=Math.max(0,e.touches[0].clientY-y0); sh.style.transform=`translateY(${dy}px)`; },{passive:true});
+    h.addEventListener("touchend",e=>{ if(y0===null) return; const dy=e.changedTouches[0].clientY-y0; y0=null; sh.style.transition="";
+      if(dy>80) toggleThemes(false); else sh.style.transform=""; });
+  });
+})();
 $("themeCurrent").onclick=()=>toggleThemes();
 function setMode(m){
   mode=m; store.set("impostor-mode",m);
@@ -392,11 +451,22 @@ function nextPlayer(){
   show("pass");
 }
 
+/* ---------- vibração ---------- */
+const hapticEl=(()=>{ try{
+  const l=document.createElement("label"); l.setAttribute("aria-hidden","true");
+  l.style.cssText="position:fixed;left:-9999px;top:0;opacity:0;pointer-events:none";
+  const i=document.createElement("input"); i.type="checkbox"; i.setAttribute("switch",""); i.tabIndex=-1;
+  l.append(i); document.body.append(l); return l; }catch(e){ return null; } })();
+function haptic(pattern){
+  if(navigator.vibrate){ try{ navigator.vibrate(pattern); }catch(e){} return; }
+  if(hapticEl){ try{ hapticEl.click(); }catch(e){} }
+}
 /* ---------- segurar para ver ---------- */
+let tickTimers=[];
 let holdTimer=null, isOpen=false;
 function openCard(){
   isOpen=true; $("flip").classList.add("open"); $("front").setAttribute("aria-hidden","false");
-  if(navigator.vibrate) try{ navigator.vibrate(40); }catch(e){}
+  haptic([35,50,70]);
   announce([...$("front").querySelectorAll(".label,.word,.theme")].map(e=>e.textContent).join(" "));
   if(!round.seen){ round.seen=true; $("nextBtn").classList.remove("hidden"); }
 }
@@ -407,12 +477,16 @@ function holdStart(e){
   if(e && e.pointerId!==undefined){ try{ $("holdBtn").setPointerCapture(e.pointerId); }catch(_){} }
   if(holdTimer||isOpen) return;
   $("holdBtn").classList.add("holding");
-  holdTimer=setTimeout(()=>{ holdTimer=null; openCard(); }, reduced?250:600);
+  haptic(12);
+  const dur = reduced?250:600;
+  tickTimers=[.25,.5,.75].map(f=>setTimeout(()=>haptic(8), dur*f));
+  holdTimer=setTimeout(()=>{ holdTimer=null; openCard(); }, dur);
 }
 function holdEnd(){
   clearTimeout(holdTimer); holdTimer=null;
+  tickTimers.forEach(clearTimeout); tickTimers=[];
   $("holdBtn").classList.remove("holding");
-  if(isOpen){ closeCard(); if(round.seen) announce("Carta escondida"); }
+  if(isOpen){ closeCard(); haptic(15); if(round.seen) announce("Carta escondida"); }
 }
 const hb=$("holdBtn");
 hb.addEventListener("pointerdown",e=>{ e.preventDefault(); holdStart(e); });
@@ -448,7 +522,7 @@ function suspense(){
   const tick=()=>{
     if(n<steps.length){
       ov.innerHTML=`<div class="count" id="ovText" aria-live="assertive">${steps[n]}</div>`;
-      if(navigator.vibrate) try{ navigator.vibrate(30); }catch(e){}
+      haptic(30);
       n++; setTimeout(tick,800);
     } else revealNames();
   };
@@ -467,7 +541,7 @@ function revealNames(){
   const no=document.createElement("button"); no.className="b-no"; no.textContent="😈 "+(names.length>1?"Escaparam":"Escapou");
   yes.onclick=()=>finish(true); no.onclick=()=>finish(false);
   box.append(yes,no);
-  if(navigator.vibrate) try{ navigator.vibrate([60,40,120]); }catch(e){}
+  haptic([60,40,120]);
   setTimeout(()=>yes.focus(),50);
 }
 function finish(found){
@@ -530,6 +604,9 @@ function confetti(colors){
   })(t0);
 }
 
+if(!store.get("impostor-visited",false)){ $("tagline").classList.remove("hidden"); store.set("impostor-visited",true); }
+$("nameInput").addEventListener("input",()=>$("addBtn").disabled=!$("nameInput").value.trim());
+$("addBtn").disabled=true;
 renderChips();
 </script>
 </body>
