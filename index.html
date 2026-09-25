@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Impostor – o jogo de festa</title>
+<meta name="description" content="Um de vocês não sabe a palavra. Descubram quem é o impostor! Jogo de festa para jogar com os amigos em um celular só.">
+<meta property="og:title" content="Impostor – o jogo de festa">
+<meta property="og:description" content="Um de vocês não sabe a palavra. Descubram quem! Jogue com os amigos em um celular só.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#17305C">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕵️</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#17305C; --bg2:#0F2346; --paper:#FFF8E7; --ink:#1A1F2E;
+  --pink:#D6245A; --mint:#6FE3B0; --muted:#B4C2DE; --line:rgba(255,255,255,.16);
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0;min-height:100%;
+  background:radial-gradient(circle at 50% -10%, #24457F 0, var(--bg) 45%, var(--bg2) 100%) fixed;
+  background-color:var(--bg);color:#fff;
+  font-family:"Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size:17px;line-height:1.45;
+}
+main{max-width:520px;margin:0 auto;padding:28px 20px 40px}
+h1{font-size:clamp(2.4rem,11vw,3.6rem);line-height:.95;font-weight:800;margin:8px 0 6px;letter-spacing:-.02em}
+.brand{display:flex;align-items:center;gap:14px;margin:6px 0 8px}
+.brand svg{width:64px;height:64px;flex:none;animation:wobble 3.5s ease-in-out infinite}
+@keyframes wobble{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg) translateY(-3px)}}
+.kicker{display:block;font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mint);font-weight:800;margin-bottom:2px}
+.theme-current{width:100%;display:flex;align-items:center;gap:12px;text-align:left;background:rgba(255,255,255,.08);color:#fff;border:2px solid var(--line);padding:14px 16px}
+.theme-current .emo{font-size:1.8rem;line-height:1;width:48px;height:48px;border-radius:12px;display:grid;place-items:center;flex:none}
+.theme-current .nm{flex:1;font-size:1.1rem;font-weight:800}
+.theme-current .nm small{display:block;font-weight:400;color:var(--muted);font-size:.85rem}
+.theme-current .chg{color:var(--mint);font-weight:600;font-size:.95rem}
+#themeSeg{margin-top:8px;animation:drop .25s ease-out}
+@keyframes drop{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.seg button{display:flex;align-items:center;gap:8px;text-align:left}
+.seg button .dot{width:10px;height:10px;border-radius:50%;flex:none}
+.sub{color:var(--muted);margin:0 0 28px}
+h2{font-size:1.15rem;font-weight:600;margin:28px 0 10px}
+[tabindex="-1"]:focus{outline:none}
+.row{display:flex;gap:8px}
+input[type=text]{
+  flex:1;min-width:0;font:inherit;padding:14px 16px;border-radius:14px;
+  border:2px solid var(--line);background:rgba(255,255,255,.06);color:#fff;outline:none;
+}
+input[type=text]::placeholder{color:#9AA9C8}
+input[type=text]:focus{border-color:var(--mint)}
+button{font:inherit;cursor:pointer;border:0;border-radius:14px;padding:14px 18px;font-weight:600}
+button:focus-visible,input:focus-visible{outline:3px solid var(--mint);outline-offset:2px}
+.btn-add{background:var(--mint);color:var(--ink)}
+.btn-main{width:100%;background:var(--pink);color:#fff;font-size:1.15rem;padding:18px;font-weight:800;margin-top:26px}
+.btn-main:disabled{opacity:.4;cursor:not-allowed}
+.btn-ghost{background:transparent;color:var(--muted);border:2px solid var(--line);width:100%;margin-top:10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;padding:0;list-style:none}
+.chip{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);padding:7px 8px 7px 14px;border-radius:999px}
+.chip button{padding:0;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.12);color:#fff;line-height:26px}
+.hint{color:var(--muted);font-size:.9rem;margin-top:8px}
+.seg{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:6px;background:rgba(255,255,255,.06);padding:5px;border-radius:14px}
+.seg button{background:transparent;color:var(--muted);padding:11px 8px;font-size:.95rem;line-height:1.2}
+.seg button[aria-pressed=true]{background:#fff;color:var(--ink)}
+.custom{display:grid;gap:8px;margin-top:10px}
+.hidden{display:none!important}
+.stepper{display:flex;align-items:center;gap:14px}
+.stepper button{width:48px;height:48px;padding:0;border-radius:50%;background:rgba(255,255,255,.1);color:#fff;font-size:1.5rem;line-height:1}
+.stepper button:disabled{opacity:.3;cursor:not-allowed}
+.stepper output{font-size:2rem;font-weight:800;min-width:2ch;text-align:center}
+.linkbtn{background:none;color:var(--muted);text-decoration:underline;padding:6px 0;font-weight:400;font-size:.95rem}
+
+/* ---- telas ---- */
+.stage{text-align:center;padding-top:4vh}
+.screen-in{animation:slideIn .35s ease-out}
+@keyframes slideIn{from{transform:translateX(40px);opacity:0}to{transform:none;opacity:1}}
+.progress{color:var(--muted);font-size:.95rem}
+.pass-name{font-size:clamp(2.4rem,12vw,3.6rem);font-weight:800;line-height:1;margin:10px 0 6px;word-break:break-word}
+
+/* ---- carta que vira ---- */
+.flip{perspective:1000px;margin:22px auto 0;max-width:320px;height:250px}
+.flip-inner{position:relative;width:100%;height:100%;transition:transform .45s cubic-bezier(.3,1.4,.5,1);transform-style:preserve-3d}
+.flip.open .flip-inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;border-radius:24px;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;padding:24px;box-shadow:0 16px 0 -6px rgba(0,0,0,.28)}
+.back{background:
+  radial-gradient(circle at 50% 50%, rgba(255,255,255,.14) 0 34%, transparent 35%),
+  repeating-linear-gradient(45deg,rgba(255,255,255,.07) 0 12px,transparent 12px 24px),
+  linear-gradient(160deg,var(--tc,#2B4F8F),#14264A);border:8px solid #fff;outline:2px solid rgba(255,255,255,.25);outline-offset:-16px}
+.back .logo{width:96px;height:96px;opacity:.95}
+.back .q{position:absolute;bottom:22px;font-size:.85rem;letter-spacing:.2em;font-weight:800;opacity:.8}
+.front{background:var(--paper);color:var(--ink);transform:rotateY(180deg);border:8px solid #fff}
+.front::before{content:"";position:absolute;inset:8px;border:2px solid var(--tc,#2B4F8F);border-radius:14px;opacity:.5;pointer-events:none}
+.front .band{position:absolute;top:18px;left:0;right:0;text-align:center;font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--tc,#2B4F8F)}
+.front .corner{position:absolute;font-size:1.5rem;line-height:1}
+.front .tl{top:16px;left:18px}.front .br{bottom:16px;right:18px;transform:rotate(180deg)}
+.front.imp::before{border-color:#fff}
+.front.imp .band{color:#fff}
+.front.imp{background:var(--pink);color:#fff;border-color:#FFD1DE}
+.face .label{font-size:.95rem;opacity:.85}
+.face .word{font-size:clamp(2rem,9vw,2.7rem);font-weight:800;line-height:1.05;margin:8px 0;word-break:break-word}
+.face .theme{font-size:1.4rem;font-weight:600;margin-top:4px}
+
+/* ---- botão segurar ---- */
+.hold{position:relative;margin:26px auto 0;width:128px;height:128px;border-radius:50%;padding:0;
+  background:rgba(255,255,255,.08);color:#fff;font-weight:800;font-size:1rem;line-height:1.15;
+  user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:none;
+  transition:transform .15s}
+.hold.holding{transform:scale(.94)}
+.hold svg{position:absolute;inset:0;transform:rotate(-90deg);pointer-events:none}
+.hold .ring{fill:none;stroke:var(--tc,var(--mint));stroke-width:7;stroke-linecap:round;stroke-dasharray:377;stroke-dashoffset:377}
+.hold.holding .ring{stroke-dashoffset:0;transition:stroke-dashoffset .6s linear}
+.hold .track{fill:none;stroke:rgba(255,255,255,.12);stroke-width:7}
+.hold span{position:relative;pointer-events:none}
+
+/* ---- final ---- */
+.starter{background:rgba(255,255,255,.08);border-radius:20px;padding:20px;margin-top:20px}
+.starter strong{display:block;font-size:2rem;margin-top:4px}
+.board{list-style:none;padding:0;margin:18px 0 0;text-align:left}
+.board li{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-radius:14px;background:rgba(255,255,255,.06);margin-bottom:6px}
+.board li.top{background:rgba(111,227,176,.18)}
+.board .pts{font-weight:800;font-size:1.2rem}
+.board .delta{color:var(--mint);font-weight:800;margin-right:8px;animation:pop .5s ease-out}
+@keyframes pop{from{transform:scale(2);opacity:0}to{transform:none;opacity:1}}
+.result{font-size:1.6rem;font-weight:800;margin:6px 0 0}
+
+/* ---- overlay da revelação ---- */
+.overlay{position:fixed;inset:0;z-index:10;background:rgba(6,12,28,.94);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;padding:calc(24px + env(safe-area-inset-top,0px)) 24px calc(24px + env(safe-area-inset-bottom,0px));
+  animation:fade .3s ease-out}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.count{font-size:9rem;font-weight:800;line-height:1;animation:countPop .8s ease-out}
+@keyframes countPop{0%{transform:scale(2.2);opacity:0}30%{opacity:1}100%{transform:scale(.9);opacity:.2}}
+.reveal-names{font-size:clamp(2.6rem,13vw,4.2rem);font-weight:800;line-height:1;color:#FF8FB0;margin:10px 0;animation:zoom .6s cubic-bezier(.3,1.6,.5,1)}
+@keyframes zoom{from{transform:scale(.3);opacity:0}to{transform:none;opacity:1}}
+.overlay .btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:420px;margin-top:28px}
+.overlay .btns button{padding:16px 10px;font-weight:800}
+.b-yes{background:var(--mint);color:var(--ink)}
+.b-no{background:var(--pink);color:#fff}
+canvas#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:20}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+@media (prefers-reduced-motion:reduce){
+  .brand svg,#themeSeg{animation:none}
+  .screen-in,.count,.reveal-names,.overlay,.board .delta{animation:none}
+  .flip-inner{transition:none}
+  .hold.holding .ring{transition:none;stroke-dashoffset:0}
+}
+</style>
+</head>
+<body>
+<div class="sr" aria-live="polite" id="live"></div>
+<main>
+
+<section id="setup">
+  <div class="brand"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M6 20c8-6 18-8 26-8s18 2 26 8c0 16-8 28-18 30-4 1-6-4-8-4s-4 5-8 4C14 48 6 36 6 20z" fill="#FFF8E7"/><path d="M15 26c3-3 9-3 12 1-3 4-9 4-12-1zM37 27c3-4 9-4 12-1-3 5-9 5-12 1z" fill="#17305C"/><path d="M22 40c6 3 14 3 20 0" stroke="#D6245A" stroke-width="3" fill="none" stroke-linecap="round"/></svg><h1 tabindex="-1" style="margin:0"><span class="kicker">o jogo de festa</span>Impostor</h1></div>
+  <p class="sub">Um de vocês não sabe a palavra. Descubram quem.</p>
+
+  <h2>Jogadores</h2>
+  <form class="row" id="addForm">
+    <label for="nameInput" class="sr">Nome do jogador</label>
+    <input type="text" id="nameInput" placeholder="Nome do jogador" autocomplete="off" maxlength="24">
+    <button type="submit" class="btn-add">Adicionar</button>
+  </form>
+  <ul class="chips" id="chips"></ul>
+  <p class="hint" id="countHint"></p>
+
+  <h2 id="impLabel">Impostores</h2>
+  <div class="stepper" role="group" aria-labelledby="impLabel">
+    <button type="button" id="impMinus" aria-label="Menos impostores">−</button>
+    <output id="impCount" aria-live="polite">1</output>
+    <button type="button" id="impPlus" aria-label="Mais impostores">+</button>
+  </div>
+  <p class="hint" id="impHint"></p>
+
+  <h2>Tema</h2>
+  <button type="button" class="theme-current" id="themeCurrent" aria-expanded="false" aria-controls="themeSeg"></button>
+  <div class="seg hidden" role="group" aria-label="Escolha o tema" id="themeSeg"></div>
+  <div class="custom hidden" id="customBox">
+    <label for="customWord" class="sr">Palavra</label>
+    <input type="text" id="customWord" placeholder="Palavra (ex.: Leão)" maxlength="30">
+    <label for="customTheme" class="sr">Dica do impostor</label>
+    <input type="text" id="customTheme" placeholder="Dica do impostor (ex.: Tigre)" maxlength="30">
+    <p class="hint" style="margin:0">Quem escolhe a palavra vai saber tudo, então é melhor não jogar essa rodada.</p>
+  </div>
+
+  <button class="btn-main" id="startBtn" disabled>Começar rodada</button>
+  <p class="hint" id="scoreHint" style="text-align:center"></p>
+</section>
+
+<section id="pass" class="stage hidden">
+  <div class="progress" id="progress"></div>
+  <p style="margin:14px 0 0;color:var(--muted)">Passe o celular para</p>
+  <h2 class="pass-name" id="passName" tabindex="-1"></h2>
+
+  <div class="flip" id="flip">
+    <div class="flip-inner">
+      <div class="face back" aria-hidden="true"><svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><path d="M6 20c8-6 18-8 26-8s18 2 26 8c0 16-8 28-18 30-4 1-6-4-8-4s-4 5-8 4C14 48 6 36 6 20z" fill="#FFF8E7"/><path d="M15 26c3-3 9-3 12 1-3 4-9 4-12-1zM37 27c3-4 9-4 12-1-3 5-9 5-12 1z" fill="#17305C"/><path d="M22 40c6 3 14 3 20 0" stroke="#D6245A" stroke-width="3" fill="none" stroke-linecap="round"/></svg><div class="q">IMPOSTOR</div></div>
+      <div class="face front" id="front" aria-hidden="true"></div>
+    </div>
+  </div>
+
+  <button class="hold" id="holdBtn" aria-describedby="holdHelp">
+    <svg viewBox="0 0 128 128" aria-hidden="true"><circle class="track" cx="64" cy="64" r="60"/><circle class="ring" cx="64" cy="64" r="60"/></svg>
+    <span>Segure<br>para ver</span>
+  </button>
+  <p class="hint" id="holdHelp">A carta só aparece enquanto você segura. Solte para esconder.</p>
+  <button class="btn-main hidden" id="nextBtn">Pronto, passar</button>
+</section>
+
+<section id="done" class="stage hidden">
+  <h2 class="pass-name" style="font-size:2.4rem" tabindex="-1" id="doneTitle">Todo mundo viu!</h2>
+  <p style="color:var(--muted)" id="doneSub">Deem as dicas e votem em quem é o impostor.</p>
+  <div class="starter" id="starterBox">Quem começa<strong id="starter"></strong></div>
+  <div id="resultBox" class="hidden"><p class="result" id="resultText"></p><p class="hint" id="resultWord"></p></div>
+  <button class="btn-main" id="exposeBtn">Revelar o impostor</button>
+  <div id="boardBox" class="hidden">
+    <h2>Placar</h2>
+    <ol class="board" id="board"></ol>
+    <button class="btn-main" id="againBtn">Nova rodada</button>
+  </div>
+  <button class="btn-ghost" id="editBtn">Voltar ao início</button>
+</section>
+
+</main>
+
+<div class="overlay hidden" id="overlay" role="dialog" aria-modal="true" aria-labelledby="ovText"></div>
+<canvas id="confetti" class="hidden" aria-hidden="true"></canvas>
+
+<script>
+const LABELS = {"marvel": "Marvel", "animais": "Animais", "comidas": "Comidas", "frutas": "Frutas e legumes", "profissoes": "Profissões", "lugares": "Lugares", "esportes": "Esportes", "objetos": "Objetos", "paises": "Países e cidades", "veiculos": "Veículos", "instrumentos": "Instrumentos", "filmes": "Filmes, séries e jogos", "negocios": "Negócios"};
+const THEMES = {"comidas": [["Pizza", "Lasanha"], ["Lasanha", "Macarrão"], ["Macarrão", "Nhoque"], ["Hambúrguer", "Cachorro-quente"], ["Cachorro-quente", "Sanduíche"], ["Sanduíche", "Misto-quente"], ["Coxinha", "Kibe"], ["Kibe", "Esfiha"], ["Esfiha", "Pastel"], ["Pastel", "Empada"], ["Empada", "Coxinha"], ["Pão de queijo", "Biscoito de polvilho"], ["Feijoada", "Churrasco"], ["Churrasco", "Picanha"], ["Picanha", "Costela"], ["Strogonoff", "Frango xadrez"], ["Arroz", "Feijão"], ["Feijão", "Lentilha"], ["Farofa", "Cuscuz"], ["Cuscuz", "Tapioca"], ["Tapioca", "Crepe"], ["Crepe", "Panqueca"], ["Panqueca", "Waffle"], ["Omelete", "Ovo frito"], ["Sushi", "Temaki"], ["Temaki", "Yakisoba"], ["Yakisoba", "Macarrão instantâneo"], ["Taco", "Burrito"], ["Burrito", "Wrap"], ["Batata frita", "Mandioca frita"], ["Purê de batata", "Polenta"], ["Sopa", "Caldo verde"], ["Salada", "Salpicão"], ["Brigadeiro", "Beijinho"], ["Beijinho", "Cajuzinho"], ["Bolo de chocolate", "Bolo de cenoura"], ["Pudim", "Flan"], ["Mousse", "Pavê"], ["Pavê", "Torta de limão"], ["Sorvete", "Picolé"], ["Açaí", "Sorvete"], ["Chocolate", "Bombom"], ["Pipoca", "Amendoim"], ["Paçoca", "Pé de moleque"], ["Cocada", "Quindim"], ["Churros", "Sonho"], ["Sonho", "Rosquinha"], ["Donut", "Rosquinha"], ["Pão francês", "Pão de forma"], ["Bolacha recheada", "Biscoito"], ["Miojo", "Macarrão"], ["Café", "Chá"], ["Refrigerante", "Suco"], ["Suco", "Vitamina"], ["Milkshake", "Vitamina"]], "frutas": [["Banana", "Manga"], ["Maçã", "Pera"], ["Pera", "Goiaba"], ["Uva", "Jabuticaba"], ["Jabuticaba", "Acerola"], ["Morango", "Framboesa"], ["Framboesa", "Amora"], ["Amora", "Mirtilo"], ["Laranja", "Tangerina"], ["Tangerina", "Limão"], ["Limão", "Lima"], ["Abacaxi", "Maracujá"], ["Maracujá", "Kiwi"], ["Kiwi", "Pitaya"], ["Pitaya", "Carambola"], ["Melancia", "Melão"], ["Melão", "Mamão"], ["Mamão", "Papaia"], ["Abacate", "Manga"], ["Coco", "Açaí"], ["Cereja", "Morango"], ["Pêssego", "Ameixa"], ["Ameixa", "Damasco"], ["Caju", "Cajá"], ["Graviola", "Fruta-do-conde"], ["Fruta-do-conde", "Pinha"], ["Figo", "Tâmara"], ["Romã", "Cereja"], ["Cenoura", "Beterraba"], ["Beterraba", "Rabanete"], ["Batata", "Batata-doce"], ["Batata-doce", "Mandioca"], ["Tomate", "Pimentão"], ["Pimentão", "Pimenta"], ["Alface", "Rúcula"], ["Rúcula", "Agrião"], ["Brócolis", "Couve-flor"], ["Couve-flor", "Repolho"], ["Abóbora", "Chuchu"], ["Pepino", "Abobrinha"], ["Berinjela", "Abobrinha"], ["Cebola", "Alho"], ["Milho", "Ervilha"]], "profissoes": [["Médico", "Enfermeiro"], ["Enfermeiro", "Farmacêutico"], ["Dentista", "Médico"], ["Veterinário", "Biólogo"], ["Professor", "Diretor"], ["Policial", "Segurança"], ["Bombeiro", "Salva-vidas"], ["Salva-vidas", "Nadador"], ["Advogado", "Juiz"], ["Juiz", "Promotor"], ["Engenheiro", "Arquiteto"], ["Arquiteto", "Designer"], ["Pedreiro", "Pintor"], ["Pintor", "Artista"], ["Eletricista", "Encanador"], ["Encanador", "Mecânico"], ["Mecânico", "Borracheiro"], ["Motorista", "Taxista"], ["Taxista", "Motorista de Uber"], ["Piloto", "Comissário de bordo"], ["Comissário de bordo", "Garçom"], ["Garçom", "Barman"], ["Cozinheiro", "Confeiteiro"], ["Confeiteiro", "Padeiro"], ["Padeiro", "Açougueiro"], ["Cabeleireiro", "Barbeiro"], ["Barbeiro", "Manicure"], ["Manicure", "Maquiador"], ["Fotógrafo", "Cinegrafista"], ["Jornalista", "Apresentador"], ["Apresentador", "Ator"], ["Ator", "Cantor"], ["Cantor", "Músico"], ["DJ", "Músico"], ["Jogador de futebol", "Técnico"], ["Técnico", "Árbitro"], ["Árbitro", "Bandeirinha"], ["Programador", "Hacker"], ["Youtuber", "Influenciador"], ["Influenciador", "Streamer"], ["Astronauta", "Piloto"], ["Cientista", "Químico"], ["Carteiro", "Entregador"], ["Entregador", "Motoboy"], ["Agricultor", "Jardineiro"], ["Jardineiro", "Paisagista"], ["Pescador", "Marinheiro"], ["Marinheiro", "Capitão"], ["Soldado", "Policial"], ["Detetive", "Espião"], ["Palhaço", "Mágico"], ["Mágico", "Ilusionista"], ["Psicólogo", "Psiquiatra"], ["Vendedor", "Caixa"], ["Faxineiro", "Porteiro"]], "lugares": [["Praia", "Piscina"], ["Piscina", "Lago"], ["Cachoeira", "Rio"], ["Montanha", "Vulcão"], ["Floresta", "Selva"], ["Deserto", "Praia"], ["Ilha", "Península"], ["Hospital", "Posto de saúde"], ["Farmácia", "Hospital"], ["Escola", "Faculdade"], ["Faculdade", "Biblioteca"], ["Biblioteca", "Livraria"], ["Cinema", "Teatro"], ["Teatro", "Casa de show"], ["Estádio", "Ginásio"], ["Academia", "Ginásio"], ["Shopping", "Supermercado"], ["Supermercado", "Feira"], ["Feira", "Mercadão"], ["Padaria", "Confeitaria"], ["Restaurante", "Lanchonete"], ["Lanchonete", "Pizzaria"], ["Bar", "Balada"], ["Balada", "Festa"], ["Parque", "Praça"], ["Parque de diversões", "Zoológico"], ["Zoológico", "Aquário"], ["Museu", "Galeria de arte"], ["Igreja", "Templo"], ["Aeroporto", "Rodoviária"], ["Rodoviária", "Estação de trem"], ["Metrô", "Ônibus"], ["Hotel", "Pousada"], ["Pousada", "Hostel"], ["Acampamento", "Sítio"], ["Sítio", "Fazenda"], ["Fazenda", "Chácara"], ["Banco", "Lotérica"], ["Correios", "Banco"], ["Delegacia", "Prisão"], ["Prisão", "Tribunal"], ["Prefeitura", "Tribunal"], ["Posto de gasolina", "Oficina"], ["Oficina", "Lava-jato"], ["Salão de beleza", "Barbearia"], ["Cemitério", "Igreja"], ["Castelo", "Palácio"], ["Circo", "Parque de diversões"], ["Cozinha", "Churrasqueira"], ["Banheiro", "Lavanderia"], ["Quarto", "Sala"], ["Garagem", "Porão"], ["Escritório", "Coworking"], ["Elevador", "Escada rolante"]], "esportes": [["Futebol", "Futsal"], ["Futsal", "Handebol"], ["Handebol", "Basquete"], ["Basquete", "Vôlei"], ["Vôlei", "Vôlei de praia"], ["Vôlei de praia", "Futevôlei"], ["Futevôlei", "Futebol"], ["Tênis", "Badminton"], ["Badminton", "Tênis de mesa"], ["Tênis de mesa", "Beach tennis"], ["Beach tennis", "Tênis"], ["Natação", "Polo aquático"], ["Polo aquático", "Nado sincronizado"], ["Surfe", "Skate"], ["Skate", "Patins"], ["Patins", "Patinação no gelo"], ["Patinação no gelo", "Hóquei"], ["Hóquei", "Futebol americano"], ["Futebol americano", "Rugby"], ["Rugby", "Futebol americano"], ["Beisebol", "Críquete"], ["Golfe", "Sinuca"], ["Sinuca", "Boliche"], ["Boliche", "Bocha"], ["Boxe", "MMA"], ["MMA", "Jiu-jitsu"], ["Jiu-jitsu", "Judô"], ["Judô", "Karatê"], ["Karatê", "Taekwondo"], ["Capoeira", "Dança"], ["Esgrima", "Arco e flecha"], ["Arco e flecha", "Tiro esportivo"], ["Ciclismo", "Corrida"], ["Corrida", "Maratona"], ["Maratona", "Triatlo"], ["Atletismo", "Salto em altura"], ["Ginástica", "Ballet"], ["Musculação", "Crossfit"], ["Crossfit", "Musculação"], ["Yoga", "Pilates"], ["Pilates", "Alongamento"], ["Escalada", "Rapel"], ["Rapel", "Paraquedismo"], ["Paraquedismo", "Asa-delta"], ["Fórmula 1", "Kart"], ["Kart", "Motocross"], ["Motocross", "Ciclismo"], ["Hipismo", "Rodeio"], ["Xadrez", "Damas"], ["Damas", "Dominó"], ["Pesca", "Mergulho"], ["Mergulho", "Natação"], ["Queimada", "Pique-bandeira"], ["Esconde-esconde", "Pega-pega"]], "objetos": [["Celular", "Tablet"], ["Tablet", "Notebook"], ["Notebook", "Computador"], ["Televisão", "Monitor"], ["Controle remoto", "Controle de videogame"], ["Fone de ouvido", "Caixa de som"], ["Caixa de som", "Rádio"], ["Relógio", "Despertador"], ["Óculos", "Lente de contato"], ["Chave", "Cadeado"], ["Carteira", "Bolsa"], ["Bolsa", "Mochila"], ["Mochila", "Mala"], ["Guarda-chuva", "Capa de chuva"], ["Travesseiro", "Almofada"], ["Cobertor", "Lençol"], ["Cama", "Sofá"], ["Sofá", "Poltrona"], ["Cadeira", "Banco"], ["Mesa", "Escrivaninha"], ["Geladeira", "Freezer"], ["Fogão", "Micro-ondas"], ["Micro-ondas", "Forno"], ["Liquidificador", "Batedeira"], ["Panela", "Frigideira"], ["Garfo", "Colher"], ["Colher", "Concha"], ["Faca", "Tesoura"], ["Prato", "Tigela"], ["Copo", "Caneca"], ["Garrafa", "Garrafa térmica"], ["Escova de dentes", "Fio dental"], ["Pasta de dente", "Enxaguante bucal"], ["Sabonete", "Shampoo"], ["Shampoo", "Condicionador"], ["Toalha", "Roupão"], ["Espelho", "Janela"], ["Pente", "Escova de cabelo"], ["Secador", "Chapinha"], ["Vassoura", "Rodo"], ["Rodo", "Esfregão"], ["Balde", "Bacia"], ["Lápis", "Caneta"], ["Caneta", "Marca-texto"], ["Borracha", "Corretivo"], ["Caderno", "Agenda"], ["Livro", "Revista"], ["Tesoura", "Estilete"], ["Cola", "Fita adesiva"], ["Martelo", "Chave de fenda"], ["Lanterna", "Vela"], ["Lâmpada", "Abajur"], ["Ventilador", "Ar-condicionado"], ["Tênis", "Chinelo"], ["Chinelo", "Sandália"], ["Boné", "Chapéu"], ["Camiseta", "Regata"], ["Calça", "Bermuda"], ["Jaqueta", "Moletom"], ["Meia", "Luva"]], "paises": [["Brasil", "Argentina"], ["Argentina", "Uruguai"], ["Uruguai", "Paraguai"], ["Chile", "Peru"], ["Peru", "Bolívia"], ["Colômbia", "Venezuela"], ["México", "Cuba"], ["Estados Unidos", "Canadá"], ["Canadá", "Estados Unidos"], ["Portugal", "Espanha"], ["Espanha", "Itália"], ["Itália", "Grécia"], ["França", "Bélgica"], ["Alemanha", "Áustria"], ["Inglaterra", "Irlanda"], ["Holanda", "Dinamarca"], ["Suíça", "Áustria"], ["Suécia", "Noruega"], ["Noruega", "Finlândia"], ["Rússia", "Ucrânia"], ["Turquia", "Grécia"], ["Egito", "Marrocos"], ["Marrocos", "Tunísia"], ["África do Sul", "Nigéria"], ["Nigéria", "Gana"], ["Índia", "Paquistão"], ["China", "Japão"], ["Japão", "Coreia do Sul"], ["Coreia do Sul", "China"], ["Tailândia", "Vietnã"], ["Austrália", "Nova Zelândia"], ["Nova Zelândia", "Austrália"], ["Arábia Saudita", "Emirados Árabes"], ["Israel", "Egito"], ["Jamaica", "Cuba"], ["São Paulo", "Rio de Janeiro"], ["Rio de Janeiro", "Salvador"], ["Salvador", "Recife"], ["Recife", "Fortaleza"], ["Fortaleza", "Natal"], ["Florianópolis", "Curitiba"], ["Curitiba", "Porto Alegre"], ["Belo Horizonte", "Brasília"], ["Manaus", "Belém"], ["Paris", "Londres"], ["Londres", "Nova York"], ["Nova York", "Los Angeles"], ["Roma", "Veneza"], ["Tóquio", "Pequim"], ["Dubai", "Las Vegas"], ["Lisboa", "Madri"]], "veiculos": [["Carro", "Caminhonete"], ["Caminhonete", "Jipe"], ["Jipe", "SUV"], ["Moto", "Bicicleta"], ["Bicicleta", "Patinete"], ["Patinete", "Skate"], ["Ônibus", "Micro-ônibus"], ["Micro-ônibus", "Van"], ["Van", "Kombi"], ["Caminhão", "Carreta"], ["Carreta", "Trator"], ["Trator", "Retroescavadeira"], ["Trem", "Metrô"], ["Metrô", "Bonde"], ["Avião", "Helicóptero"], ["Helicóptero", "Drone"], ["Balão", "Dirigível"], ["Foguete", "Nave espacial"], ["Navio", "Barco"], ["Barco", "Canoa"], ["Canoa", "Caiaque"], ["Lancha", "Jet ski"], ["Submarino", "Navio"], ["Táxi", "Uber"], ["Ambulância", "Viatura de polícia"], ["Viatura de polícia", "Caminhão de bombeiro"], ["Caminhão de bombeiro", "Ambulância"], ["Carroça", "Charrete"], ["Tanque de guerra", "Caminhão"], ["Carro de corrida", "Kart"], ["Limusine", "Carro"], ["Motor home", "Trailer"], ["Teleférico", "Bondinho"], ["Quadriciclo", "Moto"], ["Tuk-tuk", "Táxi"]], "instrumentos": [["Violão", "Guitarra"], ["Guitarra", "Baixo"], ["Baixo", "Contrabaixo"], ["Ukulele", "Cavaquinho"], ["Cavaquinho", "Violão"], ["Piano", "Teclado"], ["Teclado", "Órgão"], ["Bateria", "Pandeiro"], ["Pandeiro", "Tamborim"], ["Tamborim", "Surdo"], ["Surdo", "Tambor"], ["Violino", "Violoncelo"], ["Violoncelo", "Viola"], ["Flauta", "Flauta doce"], ["Saxofone", "Trompete"], ["Trompete", "Trombone"], ["Trombone", "Tuba"], ["Clarinete", "Oboé"], ["Gaita", "Sanfona"], ["Sanfona", "Acordeão"], ["Harpa", "Lira"], ["Triângulo", "Xilofone"], ["Xilofone", "Marimba"], ["Berimbau", "Viola caipira"], ["Microfone", "Caixa de som"], ["Chocalho", "Maracá"], ["Agogô", "Cuíca"], ["Cuíca", "Reco-reco"], ["Banjo", "Bandolim"], ["Castanhola", "Chocalho"]], "filmes": [["Harry Potter", "Senhor dos Anéis"], ["Senhor dos Anéis", "O Hobbit"], ["Star Wars", "Star Trek"], ["Titanic", "Piratas do Caribe"], ["Jurassic Park", "King Kong"], ["Toy Story", "Carros"], ["Carros", "Aviões"], ["Procurando Nemo", "Procurando Dory"], ["Shrek", "Madagascar"], ["Madagascar", "A Era do Gelo"], ["A Era do Gelo", "Madagascar"], ["O Rei Leão", "Mogli"], ["Frozen", "Enrolados"], ["Enrolados", "A Bela e a Fera"], ["Cinderela", "Branca de Neve"], ["Branca de Neve", "A Bela Adormecida"], ["Aladdin", "Pocahontas"], ["Moana", "A Pequena Sereia"], ["Divertida Mente", "Up"], ["Up", "Viva"], ["Os Incríveis", "Meu Malvado Favorito"], ["Meu Malvado Favorito", "Minions"], ["Velozes e Furiosos", "Transformers"], ["Transformers", "Velozes e Furiosos"], ["Homem-Aranha", "Batman"], ["Batman", "Superman"], ["Superman", "Mulher-Maravilha"], ["Vingadores", "Liga da Justiça"], ["Matrix", "Exterminador do Futuro"], ["Rocky", "Creed"], ["Missão Impossível", "James Bond"], ["Esqueceram de Mim", "Pânico"], ["It a Coisa", "Invocação do Mal"], ["Tropa de Elite", "Cidade de Deus"], ["Minha Mãe é uma Peça", "Se Beber Não Case"], ["Barbie", "Oppenheimer"], ["Round 6", "La Casa de Papel"], ["Stranger Things", "Wandinha"], ["Friends", "The Office"], ["Chaves", "Chapolin"], ["Bob Esponja", "Os Simpsons"], ["Os Simpsons", "Family Guy"], ["Pokémon", "Digimon"], ["Naruto", "Dragon Ball"], ["Dragon Ball", "One Piece"], ["Scooby-Doo", "Tom e Jerry"], ["Tom e Jerry", "Pica-Pau"], ["Turma da Mônica", "Sítio do Picapau Amarelo"], ["Mario", "Sonic"], ["Minecraft", "Roblox"], ["Fortnite", "Free Fire"], ["GTA", "Need for Speed"], ["FIFA", "PES"]], "animais": [["Cachorro", "Lobo"], ["Gato", "Coelho"], ["Leão", "Tigre"], ["Tigre", "Onça"], ["Onça", "Leopardo"], ["Leopardo", "Guepardo"], ["Guepardo", "Leão"], ["Elefante", "Rinoceronte"], ["Rinoceronte", "Hipopótamo"], ["Hipopótamo", "Elefante"], ["Girafa", "Zebra"], ["Zebra", "Cavalo"], ["Cavalo", "Burro"], ["Burro", "Mula"], ["Macaco", "Gorila"], ["Gorila", "Chimpanzé"], ["Chimpanzé", "Orangotango"], ["Urso", "Panda"], ["Panda", "Coala"], ["Coala", "Preguiça"], ["Preguiça", "Tamanduá"], ["Tamanduá", "Tatu"], ["Tatu", "Porco-espinho"], ["Lobo", "Raposa"], ["Raposa", "Coiote"], ["Hiena", "Lobo"], ["Coelho", "Hamster"], ["Hamster", "Rato"], ["Rato", "Esquilo"], ["Esquilo", "Castor"], ["Castor", "Capivara"], ["Capivara", "Porquinho-da-índia"], ["Porquinho-da-índia", "Hamster"], ["Canguru", "Coelho"], ["Camelo", "Lhama"], ["Lhama", "Alpaca"], ["Alpaca", "Ovelha"], ["Ovelha", "Cabra"], ["Cabra", "Veado"], ["Veado", "Alce"], ["Alce", "Rena"], ["Rena", "Cavalo"], ["Vaca", "Búfalo"], ["Búfalo", "Boi"], ["Porco", "Javali"], ["Javali", "Anta"], ["Anta", "Hipopótamo"], ["Morcego", "Coruja"], ["Coruja", "Gavião"], ["Águia", "Falcão"], ["Falcão", "Gavião"], ["Gavião", "Urubu"], ["Urubu", "Corvo"], ["Corvo", "Pombo"], ["Pombo", "Pardal"], ["Pardal", "Beija-flor"], ["Beija-flor", "Borboleta"], ["Papagaio", "Arara"], ["Arara", "Tucano"], ["Tucano", "Papagaio"], ["Periquito", "Calopsita"], ["Calopsita", "Canário"], ["Canário", "Periquito"], ["Galinha", "Pato"], ["Pato", "Ganso"], ["Ganso", "Cisne"], ["Cisne", "Flamingo"], ["Flamingo", "Garça"], ["Garça", "Cegonha"], ["Pavão", "Peru"], ["Peru", "Galinha"], ["Avestruz", "Ema"], ["Ema", "Pavão"], ["Pinguim", "Foca"], ["Foca", "Leão-marinho"], ["Leão-marinho", "Morsa"], ["Morsa", "Foca"], ["Golfinho", "Baleia"], ["Baleia", "Tubarão"], ["Tubarão", "Golfinho"], ["Orca", "Baleia"], ["Polvo", "Lula"], ["Lula", "Água-viva"], ["Água-viva", "Estrela-do-mar"], ["Estrela-do-mar", "Ouriço-do-mar"], ["Caranguejo", "Lagosta"], ["Lagosta", "Camarão"], ["Camarão", "Siri"], ["Cavalo-marinho", "Peixe-palhaço"], ["Peixe-palhaço", "Peixe-dourado"], ["Arraia", "Tubarão"], ["Piranha", "Tubarão"], ["Tartaruga", "Jabuti"], ["Jabuti", "Cágado"], ["Jacaré", "Crocodilo"], ["Crocodilo", "Lagarto"], ["Lagarto", "Camaleão"], ["Camaleão", "Iguana"], ["Iguana", "Lagartixa"], ["Cobra", "Minhoca"], ["Sucuri", "Jiboia"], ["Sapo", "Rã"], ["Rã", "Salamandra"], ["Abelha", "Vespa"], ["Vespa", "Marimbondo"], ["Formiga", "Cupim"], ["Borboleta", "Mariposa"], ["Mariposa", "Libélula"], ["Joaninha", "Besouro"], ["Besouro", "Barata"], ["Barata", "Grilo"], ["Grilo", "Gafanhoto"], ["Gafanhoto", "Louva-a-deus"], ["Mosquito", "Mosca"], ["Mosca", "Pernilongo"], ["Aranha", "Escorpião"], ["Escorpião", "Caranguejo"], ["Minhoca", "Lesma"], ["Lesma", "Caracol"], ["Caracol", "Tartaruga"], ["Ornitorrinco", "Pato"], ["Mico-leão-dourado", "Macaco"], ["Boto-cor-de-rosa", "Golfinho"], ["Tamanduá-bandeira", "Tatu"], ["Lobo-guará", "Raposa"], ["Urso-polar", "Pinguim"], ["Guaxinim", "Gambá"], ["Gambá", "Rato"], ["Ouriço", "Porco-espinho"], ["Toupeira", "Rato"]], "marvel": [["Homem-Aranha", "Deadpool"], ["Homem de Ferro", "Máquina de Combate"], ["Capitão América", "Soldado Invernal"], ["Thor", "Loki"], ["Hulk", "Mulher-Hulk"], ["Viúva Negra", "Gavião Arqueiro"], ["Gavião Arqueiro", "Viúva Negra"], ["Pantera Negra", "Shuri"], ["Doutor Estranho", "Feiticeira Escarlate"], ["Thanos", "Galactus"], ["Loki", "Thor"], ["Wolverine", "Dentes de Sabre"], ["Deadpool", "Homem-Aranha"], ["Groot", "Rocket"], ["Rocket", "Groot"], ["Senhor das Estrelas", "Gamora"], ["Gamora", "Nebulosa"], ["Drax", "Hulk"], ["Homem-Formiga", "Vespa"], ["Vespa", "Homem-Formiga"], ["Capitã Marvel", "Surfista Prateado"], ["Feiticeira Escarlate", "Doutor Estranho"], ["Visão", "Ultron"], ["Falcão", "Máquina de Combate"], ["Soldado Invernal", "Falcão"], ["Nick Fury", "Agente Coulson"], ["Venom", "Carnificina"], ["Carnificina", "Venom"], ["Magneto", "Professor Xavier"], ["Professor Xavier", "Magneto"], ["Tempestade", "Jean Grey"], ["Jean Grey", "Tempestade"], ["Ciclope", "Wolverine"], ["Mística", "Loki"], ["Justiceiro", "Demolidor"], ["Demolidor", "Justiceiro"], ["Motoqueiro Fantasma", "Blade"], ["Blade", "Motoqueiro Fantasma"], ["Duende Verde", "Doutor Octopus"], ["Doutor Octopus", "Duende Verde"], ["Ultron", "Visão"], ["Shuri", "Pantera Negra"], ["Nebulosa", "Gamora"], ["Máquina de Combate", "Homem de Ferro"], ["Tocha Humana", "Motoqueiro Fantasma"], ["Coisa", "Hulk"], ["Surfista Prateado", "Capitã Marvel"], ["Galactus", "Thanos"], ["Dentes de Sabre", "Wolverine"]], "negocios": [["Dinheiro", "Moeda"], ["Loja", "Mercado"], ["Cliente", "Consumidor"], ["Chefe", "Gerente"], ["Gerente", "Supervisor"], ["Vendedor", "Atendente"], ["Lucro", "Faturamento"], ["Salário", "Bônus"], ["Banco", "Lotérica"], ["Cartão de crédito", "Cartão de débito"], ["Pix", "Transferência"], ["Nota fiscal", "Recibo"], ["Caixa", "Balcão"], ["Promoção", "Liquidação"], ["Black Friday", "Liquidação"], ["Propaganda", "Outdoor"], ["Marca", "Logotipo"], ["Estoque", "Depósito"], ["Entrega", "Frete"], ["Padaria", "Confeitaria"], ["Restaurante", "Lanchonete"], ["Feira", "Mercadão"], ["Food truck", "Barraca"], ["Funcionário", "Estagiário"], ["Reunião", "Palestra"], ["Sócio", "Investidor"], ["Contrato", "Acordo"], ["Meta", "Objetivo"], ["Prejuízo", "Dívida"], ["Empréstimo", "Financiamento"], ["Imposto", "Taxa"], ["Cofrinho", "Poupança"], ["Maquininha", "Caixa registradora"], ["Boleto", "Fatura"], ["Shopping", "Galeria"], ["Fábrica", "Indústria"], ["Fornecedor", "Distribuidor"], ["Currículo", "Portfólio"], ["Férias", "Folga"], ["Startup", "Empresa"], ["Franquia", "Filial"], ["Aplicativo", "Site"], ["Instagram", "TikTok"], ["Influenciador", "Youtuber"], ["Home office", "Coworking"], ["Crachá", "Uniforme"], ["Bolsa de valores", "Criptomoeda"], ["CEO", "Presidente"], ["Aluguel", "Condomínio"], ["Vale-refeição", "Vale-transporte"]]};
+
+const $ = id => document.getElementById(id);
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const store = {
+  get(k,d){ try { const v=localStorage.getItem(k); return v?JSON.parse(v):d; } catch(e){ return d; } },
+  set(k,v){ try { localStorage.setItem(k,JSON.stringify(v)); } catch(e){} }
+};
+let players = store.get("impostor-players", []);
+let scores  = store.get("impostor-scores", {});
+let impCount = store.get("impostor-count", 1);
+let lastImps = [];
+const META = {tudo:["🎲","#7B61FF","Tudo misturado"],marvel:["🦸","#E23636"],animais:["🐾","#2E9E5B"],comidas:["🍔","#E8772E"],frutas:["🍓","#D6336C"],
+  profissoes:["👷","#C9941A"],lugares:["📍","#1F8FA6"],esportes:["⚽","#3A7D2C"],objetos:["🎒","#6C5CE7"],paises:["🌎","#2872C9"],
+  veiculos:["🚗","#B03A2E"],instrumentos:["🎸","#8E44AD"],filmes:["🎬","#C0392B"],negocios:["💼","#2C6E63"],custom:["✏️","#5B6CFF","Escolher eu"]};
+const nameOf = k => META[k][2] || LABELS[k];
+let mode = store.get("impostor-mode","tudo");
+if(!META[mode]) mode="tudo";
+let round = null;
+let lastWord = null;
+
+function announce(t){ $("live").textContent=""; setTimeout(()=>$("live").textContent=t,50); }
+function rand(n){ const a=new Uint32Array(1); crypto.getRandomValues(a); return a[0]%n; }
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=rand(i+1); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function maxImps(){ return Math.max(1, Math.floor((players.length-1)/2)); }
+
+function show(id, focusEl){
+  ["setup","pass","done"].forEach(s=>{
+    const el=$(s); const on = s===id;
+    el.classList.toggle("hidden",!on);
+    if(on){ el.classList.remove("screen-in"); void el.offsetWidth; el.classList.add("screen-in"); }
+  });
+  window.scrollTo(0,0);
+  const f = focusEl || $(id).querySelector("[tabindex='-1']");
+  if(f) setTimeout(()=>f.focus(),30);
+}
+
+/* ---------- configuração ---------- */
+function renderChips(){
+  const ul=$("chips"); ul.innerHTML="";
+  players.forEach((p,i)=>{
+    const li=document.createElement("li"); li.className="chip";
+    const span=document.createElement("span"); span.textContent=p;
+    const b=document.createElement("button"); b.type="button"; b.textContent="×";
+    b.setAttribute("aria-label","Remover "+p);
+    b.onclick=()=>{ players.splice(i,1); store.set("impostor-players",players); renderChips(); announce(p+" removido"); };
+    li.append(span,b); ul.append(li);
+  });
+  const n=players.length;
+  $("countHint").textContent = n<3 ? `Adicione pelo menos 3 jogadores (${n} agora).` : `${n} jogadores.`;
+  renderImps(); validate(); renderScoreHint();
+}
+function renderImps(){
+  impCount = Math.min(Math.max(1,impCount), maxImps());
+  $("impCount").textContent = impCount;
+  $("impMinus").disabled = impCount<=1;
+  $("impPlus").disabled = impCount>=maxImps();
+  $("impHint").textContent = players.length<5
+    ? "Com 5 ou mais jogadores dá para ter mais de um impostor."
+    : impCount>1 ? "Os impostores não sabem quem é o outro." : `Até ${maxImps()} impostores com ${players.length} jogadores.`;
+  store.set("impostor-count",impCount);
+}
+function renderScoreHint(){
+  const has = Object.values(scores).some(v=>v>0);
+  $("scoreHint").innerHTML="";
+  if(has){
+    const b=document.createElement("button"); b.className="linkbtn"; b.type="button"; b.textContent="Zerar placar";
+    b.onclick=()=>{ scores={}; store.set("impostor-scores",scores); renderScoreHint(); announce("Placar zerado"); };
+    $("scoreHint").append(b);
+  }
+}
+function validate(){
+  let ok = players.length>=3;
+  if(mode==="custom") ok = ok && $("customWord").value.trim() && $("customTheme").value.trim();
+  $("startBtn").disabled=!ok;
+}
+$("impMinus").onclick=()=>{ impCount--; renderImps(); };
+$("impPlus").onclick=()=>{ impCount++; renderImps(); };
+$("addForm").onsubmit=e=>{
+  e.preventDefault();
+  const v=$("nameInput").value.trim();
+  if(v && !players.some(p=>p.toLowerCase()===v.toLowerCase())){ players.push(v); store.set("impostor-players",players); renderChips(); announce(v+" adicionado"); }
+  $("nameInput").value=""; $("nameInput").focus();
+};
+function renderCurrent(){
+  const [e,c]=META[mode]; const n = mode==="tudo" ? Object.values(THEMES).flat().length : mode==="custom" ? null : THEMES[mode].length;
+  $("themeCurrent").innerHTML="";
+  const em=document.createElement("span"); em.className="emo"; em.style.background=c; em.textContent=e;
+  const nm=document.createElement("span"); nm.className="nm"; nm.textContent=nameOf(mode);
+  const sm=document.createElement("small"); sm.textContent = n ? `${n} palavras` : "Você escreve a palavra"; nm.append(sm);
+  const ch=document.createElement("span"); ch.className="chg"; ch.textContent = $("themeSeg").classList.contains("hidden") ? "Trocar" : "Fechar";
+  $("themeCurrent").append(em,nm,ch);
+}
+function toggleThemes(open){
+  const seg=$("themeSeg"); const o = open ?? seg.classList.contains("hidden");
+  seg.classList.toggle("hidden",!o); $("themeCurrent").setAttribute("aria-expanded",o); renderCurrent();
+  if(o){ const b=seg.querySelector('[aria-pressed="true"]'); if(b) b.focus(); }
+}
+$("themeCurrent").onclick=()=>toggleThemes();
+function setMode(m){
+  mode=m; store.set("impostor-mode",m);
+  document.querySelectorAll("#themeSeg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.mode===m));
+  toggleThemes(false); if(m!=="custom") $("themeCurrent").focus(); else setTimeout(()=>$("customWord").focus(),30);
+  $("customBox").classList.toggle("hidden",m!=="custom");
+  validate();
+}
+(function(){
+  const seg=$("themeSeg");
+  ["tudo",...Object.keys(LABELS),"custom"].forEach(k=>{
+    const b=document.createElement("button"); b.type="button"; b.dataset.mode=k;
+    const d=document.createElement("span"); d.className="dot"; d.style.background=META[k][1];
+    const t=document.createElement("span"); t.textContent=META[k][0]+" "+nameOf(k);
+    b.append(d,t); b.setAttribute("aria-pressed",k===mode); b.onclick=()=>setMode(k); seg.append(b); });
+  $("customBox").classList.toggle("hidden",mode!=="custom");
+  renderCurrent();
+})();
+$("startBtn").onclick=startRound;
+$("customWord").oninput=validate; $("customTheme").oninput=validate;
+
+/* ---------- rodada ---------- */
+function pickImpostors(k){
+  let pool = players.map((_,i)=>i);
+  const fresh = pool.filter(i=>!lastImps.includes(players[i]));
+  if(fresh.length>=k) pool=fresh;          // evita repetir quem foi impostor na rodada anterior
+  return shuffle(pool).slice(0,k);
+}
+function startRound(){
+  let word, theme, key=mode;
+  if(mode==="custom"){ word=$("customWord").value.trim(); theme=$("customTheme").value.trim(); }
+  else{
+    const W = mode==="tudo" ? Object.entries(THEMES).flatMap(([k,l])=>l.map(x=>[...x,k])) : THEMES[mode].map(x=>[...x,mode]);
+    let pick; do{ pick=W[rand(W.length)]; } while(W.length>1 && pick[0]===lastWord);
+    [word,theme,key]=pick; lastWord=word;
+  }
+  const k=Math.min(impCount,maxImps());
+  round={ word, theme, key, imps: pickImpostors(k), i:0, order:[...players], scored:false };
+  lastImps = round.imps.map(i=>players[i]);
+  nextPlayer();
+}
+function nextPlayer(){
+  if(round.i>=round.order.length){ showDone(); return; }
+  $("progress").textContent=`Jogador ${round.i+1} de ${round.order.length}`;
+  $("passName").textContent=round.order[round.i];
+  const isImp = round.imps.includes(round.i);
+  $("pass").style.setProperty("--tc", META[round.key][1]);
+  const f=$("front"); f.className="face front"+(isImp?" imp":""); f.innerHTML="";
+  const add=(c,t)=>{ const d=document.createElement("div"); d.className=c; d.textContent=t; f.append(d); return d; };
+  add("band", nameOf(round.key)).setAttribute("aria-hidden","true");
+  const ce = isImp ? "🎭" : META[round.key][0];
+  add("corner tl",ce).setAttribute("aria-hidden","true"); add("corner br",ce).setAttribute("aria-hidden","true");
+  if(isImp){ add("label","Você é o"); add("word","IMPOSTOR"); add("label","Sua dica:"); add("theme",round.theme); }
+  else { add("label","Sua palavra é"); add("word",round.word); }
+  closeCard(); round.seen=false;
+  $("nextBtn").classList.add("hidden");
+  show("pass");
+}
+
+/* ---------- segurar para ver ---------- */
+let holdTimer=null, isOpen=false;
+function openCard(){
+  isOpen=true; $("flip").classList.add("open"); $("front").setAttribute("aria-hidden","false");
+  if(navigator.vibrate) try{ navigator.vibrate(40); }catch(e){}
+  announce([...$("front").querySelectorAll(".label,.word,.theme")].map(e=>e.textContent).join(" "));
+  if(!round.seen){ round.seen=true; $("nextBtn").classList.remove("hidden"); }
+}
+function closeCard(){
+  isOpen=false; $("flip").classList.remove("open"); $("front").setAttribute("aria-hidden","true");
+}
+function holdStart(e){
+  if(e && e.pointerId!==undefined){ try{ $("holdBtn").setPointerCapture(e.pointerId); }catch(_){} }
+  if(holdTimer||isOpen) return;
+  $("holdBtn").classList.add("holding");
+  holdTimer=setTimeout(()=>{ holdTimer=null; openCard(); }, reduced?250:600);
+}
+function holdEnd(){
+  clearTimeout(holdTimer); holdTimer=null;
+  $("holdBtn").classList.remove("holding");
+  if(isOpen){ closeCard(); if(round.seen) announce("Carta escondida"); }
+}
+const hb=$("holdBtn");
+hb.addEventListener("pointerdown",e=>{ e.preventDefault(); holdStart(e); });
+["pointerup","pointercancel","lostpointercapture"].forEach(ev=>hb.addEventListener(ev,holdEnd));
+hb.addEventListener("contextmenu",e=>e.preventDefault());
+hb.addEventListener("keydown",e=>{ if((e.key===" "||e.key==="Enter")&&!e.repeat){ e.preventDefault(); holdStart(); } });
+hb.addEventListener("keyup",e=>{ if(e.key===" "||e.key==="Enter"){ e.preventDefault(); holdEnd(); } });
+hb.addEventListener("click",e=>e.preventDefault());
+$("nextBtn").onclick=()=>{ holdEnd(); round.i++; nextPlayer(); };
+
+/* ---------- fim da rodada ---------- */
+let armed=false, armTimer=null;
+function resetExpose(){ armed=false; clearTimeout(armTimer); $("exposeBtn").textContent="Revelar o impostor"; }
+function showDone(){
+  $("starter").textContent=round.order[rand(round.order.length)];
+  $("doneTitle").textContent="Todo mundo viu!";
+  $("doneSub").textContent = round.imps.length>1 ? `Tem ${round.imps.length} impostores. Deem as dicas e votem!` : "Deem as dicas e votem em quem é o impostor.";
+  $("doneSub").classList.remove("hidden"); $("starterBox").classList.remove("hidden");
+  $("resultBox").classList.add("hidden"); $("boardBox").classList.add("hidden");
+  $("exposeBtn").classList.remove("hidden"); resetExpose();
+  show("done");
+}
+$("exposeBtn").onclick=()=>{
+  if(!armed){ armed=true; $("exposeBtn").textContent="Toque de novo para revelar"; announce("Toque de novo para revelar");
+    armTimer=setTimeout(resetExpose,3000); return; }
+  resetExpose(); suspense();
+};
+function impNames(){ return round.imps.map(i=>round.order[i]); }
+function suspense(){
+  const ov=$("overlay"); ov.classList.remove("hidden"); ov.innerHTML="";
+  const steps = reduced ? [] : ["3","2","1"];
+  let n=0;
+  const tick=()=>{
+    if(n<steps.length){
+      ov.innerHTML=`<div class="count" id="ovText" aria-live="assertive">${steps[n]}</div>`;
+      if(navigator.vibrate) try{ navigator.vibrate(30); }catch(e){}
+      n++; setTimeout(tick,800);
+    } else revealNames();
+  };
+  tick();
+}
+function revealNames(){
+  const ov=$("overlay"); ov.innerHTML="";
+  const names=impNames();
+  const mk=(tag,cls,txt)=>{ const e=document.createElement(tag); if(cls)e.className=cls; e.textContent=txt; ov.append(e); return e; };
+  const t=mk("p","", names.length>1?"Os impostores eram":"O impostor era"); t.id="ovText"; t.style.color="var(--muted)"; t.style.margin="0";
+  mk("div","reveal-names",names.join(" e "));
+  mk("p","hint",`Palavra: ${round.word} · Dica: ${round.theme}`);
+  mk("p","",names.length>1?"O grupo descobriu os impostores?":"O grupo descobriu o impostor?").style.margin="24px 0 0";
+  const box=document.createElement("div"); box.className="btns"; ov.append(box);
+  const yes=document.createElement("button"); yes.className="b-yes"; yes.textContent="✅ Descobriram";
+  const no=document.createElement("button"); no.className="b-no"; no.textContent="😈 "+(names.length>1?"Escaparam":"Escapou");
+  yes.onclick=()=>finish(true); no.onclick=()=>finish(false);
+  box.append(yes,no);
+  if(navigator.vibrate) try{ navigator.vibrate([60,40,120]); }catch(e){}
+  setTimeout(()=>yes.focus(),50);
+}
+function finish(found){
+  $("overlay").classList.add("hidden");
+  const names=impNames(), delta={};
+  if(!round.scored){
+    round.order.forEach((p,i)=>{
+      const imp=round.imps.includes(i);
+      const pts = found ? (imp?0:1) : (imp?2:0);
+      if(pts){ scores[p]=(scores[p]||0)+pts; delta[p]=pts; }
+    });
+    round.scored=true; store.set("impostor-scores",scores);
+  }
+  $("doneTitle").textContent = found ? "Pegaram!" : (names.length>1?"Os impostores venceram!":"O impostor venceu!");
+  $("doneSub").classList.add("hidden"); $("starterBox").classList.add("hidden");
+  $("resultText").textContent = (names.length>1?"Impostores: ":"Impostor: ")+names.join(" e ");
+  $("resultWord").textContent = `Palavra: ${round.word} · Dica: ${round.theme}`;
+  $("resultBox").classList.remove("hidden");
+  $("exposeBtn").classList.add("hidden");
+  renderBoard(delta);
+  $("boardBox").classList.remove("hidden");
+  show("done");
+  announce(found ? "O grupo venceu. Quem não era impostor ganhou 1 ponto." : "Os impostores venceram e ganharam 2 pontos cada.");
+  confetti(found ? ["#6FE3B0","#FFFFFF","#FFD166","#7FB2FF"] : ["#D6245A","#FF8FB0","#1A1F2E","#FFFFFF"]);
+}
+function renderBoard(delta){
+  const ol=$("board"); ol.innerHTML="";
+  const list=players.map(p=>[p,scores[p]||0]).sort((a,b)=>b[1]-a[1]);
+  const top=list[0]?list[0][1]:0;
+  list.forEach(([p,s])=>{
+    const li=document.createElement("li"); if(s>0&&s===top) li.className="top";
+    const name=document.createElement("span"); name.textContent=(s>0&&s===top?"👑 ":"")+p;
+    const right=document.createElement("span");
+    if(delta&&delta[p]){ const d=document.createElement("span"); d.className="delta"; d.textContent="+"+delta[p]; right.append(d); }
+    const pts=document.createElement("span"); pts.className="pts"; pts.textContent=s; right.append(pts);
+    li.append(name,right); ol.append(li);
+  });
+}
+$("againBtn").onclick=()=>{ if(mode==="custom") show("setup"); else startRound(); };
+$("editBtn").onclick=()=>{ renderScoreHint(); show("setup"); };
+
+/* ---------- confete ---------- */
+function confetti(colors){
+  if(reduced) return;
+  const c=$("confetti"); c.classList.remove("hidden");
+  const ctx=c.getContext("2d"), dpr=window.devicePixelRatio||1;
+  c.width=innerWidth*dpr; c.height=innerHeight*dpr; ctx.scale(dpr,dpr);
+  const parts=Array.from({length:140},()=>({
+    x:innerWidth/2+(Math.random()-.5)*80, y:innerHeight*.35,
+    vx:(Math.random()-.5)*14, vy:-Math.random()*14-4,
+    s:6+Math.random()*6, r:Math.random()*6, vr:(Math.random()-.5)*.3,
+    col:colors[Math.floor(Math.random()*colors.length)]
+  }));
+  const t0=performance.now();
+  (function frame(t){
+    ctx.clearRect(0,0,innerWidth,innerHeight);
+    parts.forEach(p=>{ p.vy+=.35; p.vx*=.99; p.x+=p.vx; p.y+=p.vy; p.r+=p.vr;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r); ctx.fillStyle=p.col; ctx.fillRect(-p.s/2,-p.s/4,p.s,p.s/2); ctx.restore(); });
+    if(t-t0<2600) requestAnimationFrame(frame); else { ctx.clearRect(0,0,innerWidth,innerHeight); c.classList.add("hidden"); }
+  })(t0);
+}
+
+renderChips();
+</script>
+</body>
+</html>
