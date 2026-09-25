@@ -1,9 +1,9 @@
 {
-  "name": "Impostor – o jogo de festa",
+  "name": "Quem é o Impostor?",
   "short_name": "Impostor",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#FF6A1A",
+  "background_color": "#0F2346",
   "theme_color": "#17305C",
   "lang": "pt-BR",
   "icons": [
